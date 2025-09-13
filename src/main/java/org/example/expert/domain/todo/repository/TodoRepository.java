@@ -19,8 +19,8 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
             FROM Todo t
             LEFT JOIN FETCH t.user u
             WHERE (COALESCE(:weather, '') = '' OR t.weather LIKE CONCAT('%', :weather, '%'))
-                AND (COALESCE(:startDate, '') = '' OR FUNCTION('DATE', t.modifiedAt) >= :startDate)
-                AND (COALESCE(:endDate, '') = '' OR FUNCTION('DATE', t.modifiedAt) <= :endDate)
+                AND (:startDate IS NULL OR FUNCTION('DATE', t.modifiedAt) >= :startDate)
+                AND (:endDate IS NULL OR FUNCTION('DATE', t.modifiedAt) <= :endDate)
             ORDER BY t.modifiedAt DESC
         """)
     Page<Todo> searchWithUser(
