@@ -1,11 +1,12 @@
 package org.example.expert.domain.todo.repository;
 
+import static org.example.expert.domain.todo.entity.QTodo.todo;
+import static org.example.expert.domain.user.entity.QUser.user;
+
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.example.expert.domain.todo.entity.QTodo;
 import org.example.expert.domain.todo.entity.Todo;
-import org.example.expert.domain.user.entity.QUser;
 
 @RequiredArgsConstructor
 public class TodoRepositoryCustomImpl implements TodoRepositoryCustom {
@@ -14,9 +15,6 @@ public class TodoRepositoryCustomImpl implements TodoRepositoryCustom {
 
     @Override
     public Optional<Todo> findByIdWithUser(Long todoId) {
-        QTodo todo = QTodo.todo;
-        QUser user = QUser.user;
-
         Todo result = queryFactory
             .selectFrom(todo)
             .leftJoin(todo.user, user).fetchJoin()
