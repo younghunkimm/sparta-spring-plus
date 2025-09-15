@@ -55,7 +55,7 @@ public class TodoRepositoryCustomImpl implements TodoRepositoryCustom {
             .select(new QTodoSearchResponse(
                 todo.title,
                 JPAExpressions
-                    .select(manager.id.count())
+                    .select(manager.user.id.countDistinct())
                     .from(manager)
                     .where(
                         manager.todo.eq(todo)
