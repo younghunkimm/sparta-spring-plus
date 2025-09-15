@@ -50,7 +50,7 @@ public class TodoController {
     }
 
     @GetMapping("/todos/search")
-    public ResponseEntity<Page<TodoSearchResponse>> searchTitleAndCount(
+    public ResponseEntity<Page<TodoSearchResponse>> searchWithRelationCounts(
         @RequestParam(required = false) String keyword,
         @RequestParam(required = false) LocalDate startDate,
         @RequestParam(required = false) LocalDate endDate,
@@ -59,6 +59,7 @@ public class TodoController {
         @RequestParam(defaultValue = "10") int size
     ) {
         return ResponseEntity.ok(
-            todoService.searchTitleAndCount(keyword, startDate, endDate, managerName, page, size));
+            todoService.searchWithRelationCounts(keyword, startDate, endDate, managerName, page,
+                size));
     }
 }

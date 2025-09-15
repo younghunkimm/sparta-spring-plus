@@ -89,7 +89,7 @@ public class TodoService {
         );
     }
 
-    public Page<TodoSearchResponse> searchTitleAndCount(
+    public Page<TodoSearchResponse> searchWithRelationCounts(
         String keyword,
         LocalDate startDate,
         LocalDate endDate,
@@ -100,7 +100,7 @@ public class TodoService {
 
         Pageable pageable = PageRequest.of(page - 1, size);
 
-        return todoRepository.searchTitleAndCount(keyword, startDate,
+        return todoRepository.searchWithRelationCounts(keyword, startDate,
             endDate, managerName, pageable);
     }
 }

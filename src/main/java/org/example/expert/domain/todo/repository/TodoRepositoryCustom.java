@@ -11,7 +11,7 @@ public interface TodoRepositoryCustom {
 
     Optional<Todo> findByIdWithUser(Long todoId);
 
-    Page<TodoSearchResponse> searchTitleAndCount(
+    Page<TodoSearchResponse> searchWithRelationCounts(
         String keyword,
         LocalDate startDate,
         LocalDate endDate,

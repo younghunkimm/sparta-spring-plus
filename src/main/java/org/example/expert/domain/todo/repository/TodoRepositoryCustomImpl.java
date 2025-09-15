@@ -5,6 +5,7 @@ import static org.example.expert.domain.manager.entity.QManager.manager;
 import static org.example.expert.domain.todo.entity.QTodo.todo;
 import static org.example.expert.domain.user.entity.QUser.user;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -18,8 +19,8 @@ import org.example.expert.domain.todo.dto.response.QTodoSearchResponse;
 import org.example.expert.domain.todo.dto.response.TodoSearchResponse;
 import org.example.expert.domain.todo.entity.Todo;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.util.StringUtils;
 
 @RequiredArgsConstructor
@@ -39,33 +40,28 @@ public class TodoRepositoryCustomImpl implements TodoRepositoryCustom {
     }
 
     @Override
-    public Page<TodoSearchResponse> searchTitleAndCount(
+    public Page<TodoSearchResponse> searchWithRelationCounts(
         String keyword, LocalDate startDate,
         LocalDate endDate, String managerName, Pageable pageable
     ) {
+
+        BooleanBuilder conditions = new BooleanBuilder();
+        conditions.and(containsKeyword(keyword));
+        conditions.and(goeCreatedAt(startDate));
+        conditions.and(loeCreatedAt(endDate));
+        conditions.and(containsManagerName(managerName));
+
         List<TodoSearchResponse> content = queryFactory
             .select(new QTodoSearchResponse(
                 todo.title,
-                JPAExpressions
-                    .select(manager.id.count())
-                    .from(manager)
-                    .where(
-                        manager.todo.eq(todo)
-                    ),
-                JPAExpressions
-                    .select(comment.id.count())
-                    .from(comment)
-                    .where(
-                        comment.todo.eq(todo)
-                    )
+                manager.countDistinct(),
+                comment.countDistinct()
             ))
             .from(todo)
-            .where(
-                containsKeyword(keyword),
-                goeCreatedAt(startDate),
-                loeCreatedAt(endDate),
-                containsManagerName(managerName)
-            )
+            .leftJoin(manager).on(manager.todo.eq(todo))
+            .leftJoin(comment).on(comment.todo.eq(todo))
+            .where(conditions)
+            .groupBy(todo.id)
             .orderBy(todo.createdAt.desc())
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
@@ -74,16 +70,11 @@ public class TodoRepositoryCustomImpl implements TodoRepositoryCustom {
         long total = Optional.ofNullable(queryFactory
             .select(todo.count())
             .from(todo)
-            .where(
-                containsKeyword(keyword),
-                goeCreatedAt(startDate),
-                loeCreatedAt(endDate),
-                containsManagerName(managerName)
-            )
+            .where(conditions)
             .fetchOne()
         ).orElse(0L);
 
-        return new PageImpl<>(content, pageable, total);
+        return PageableExecutionUtils.getPage(content, pageable, () -> total);
     }
 
     private BooleanExpression containsKeyword(String keyword) {
@@ -103,13 +94,13 @@ public class TodoRepositoryCustomImpl implements TodoRepositoryCustom {
     private BooleanExpression loeCreatedAt(LocalDate endDate) {
 
         return endDate != null
-            ? todo.createdAt.loe(LocalDateTime.of(endDate, LocalTime.MAX))
+            ? todo.createdAt.loe(endDate.plusDays(1).atStartOfDay().minusNanos(1))
             : null;
     }
 
     private BooleanExpression containsManagerName(String nickname) {
 
-        if (nickname == null) {
+        if (!StringUtils.hasText(nickname)) {
             return null;
         }
 
