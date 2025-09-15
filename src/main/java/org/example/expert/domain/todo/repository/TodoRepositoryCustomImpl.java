@@ -67,14 +67,14 @@ public class TodoRepositoryCustomImpl implements TodoRepositoryCustom {
             .limit(pageable.getPageSize())
             .fetch();
 
-        long total = Optional.ofNullable(queryFactory
-            .select(todo.count())
-            .from(todo)
-            .where(conditions)
-            .fetchOne()
-        ).orElse(0L);
-
-        return PageableExecutionUtils.getPage(content, pageable, () -> total);
+        return PageableExecutionUtils.getPage(content, pageable, () ->
+            Optional.ofNullable(queryFactory
+                .select(todo.count())
+                .from(todo)
+                .where(conditions)
+                .fetchOne()
+            ).orElse(0L)
+        );
     }
 
     private BooleanExpression containsKeyword(String keyword) {
@@ -94,7 +94,7 @@ public class TodoRepositoryCustomImpl implements TodoRepositoryCustom {
     private BooleanExpression loeCreatedAt(LocalDate endDate) {
 
         return endDate != null
-            ? todo.createdAt.loe(endDate.plusDays(1).atStartOfDay().minusNanos(1))
+            ? todo.createdAt.lt(endDate.plusDays(1).atStartOfDay())
             : null;
     }
 
