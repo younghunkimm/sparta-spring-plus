@@ -54,14 +54,21 @@ public class TodoRepositoryCustomImpl implements TodoRepositoryCustom {
         List<TodoSearchResponse> content = queryFactory
             .select(new QTodoSearchResponse(
                 todo.title,
-                manager.countDistinct(),
-                comment.countDistinct()
+                JPAExpressions
+                    .select(manager.id.count())
+                    .from(manager)
+                    .where(
+                        manager.todo.eq(todo)
+                    ),
+                JPAExpressions
+                    .select(comment.id.count())
+                    .from(comment)
+                    .where(
+                        comment.todo.eq(todo)
+                    )
             ))
             .from(todo)
-            .leftJoin(manager).on(manager.todo.eq(todo))
-            .leftJoin(comment).on(comment.todo.eq(todo))
             .where(conditions)
-            .groupBy(todo.id)
             .orderBy(todo.createdAt.desc())
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
