@@ -1,0 +1,8 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+
+jwt:
+  secret:
+    key: 5bcfc3164ee3a237a2c89c336dace7604e2c73e4a18f1acc5639971acbe68108
