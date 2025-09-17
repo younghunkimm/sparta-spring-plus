@@ -43,7 +43,9 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll()
-                .requestMatchers(("/actuator/**")).permitAll()
+                .requestMatchers(("/actuator/health")).permitAll()
+                .requestMatchers(("/actuator/info")).permitAll()
+                .requestMatchers(("/actuator/**")).hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, SecurityContextHolderAwareRequestFilter.class)
