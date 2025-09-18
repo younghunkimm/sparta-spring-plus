@@ -5,6 +5,12 @@ spring:
         show_sql: true
         format_sql: true
     open-in-view: false
+  cloud:
+    aws:
+      region:
+        static: ap-northeast-2
+      s3:
+        bucket: kyh-spring-plus-bucket
 
 logging:
   level:
