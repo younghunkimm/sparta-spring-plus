@@ -65,6 +65,10 @@ dependencies {
 
     // Actuator
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // Spring Cloud AWS
+    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.2.1") // BOM
+    implementation "io.awspring.cloud:spring-cloud-aws-starter-s3"
 }
 
 tasks.named('test') {
