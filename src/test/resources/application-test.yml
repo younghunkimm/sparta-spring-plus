@@ -2,6 +2,13 @@ spring:
   config:
     activate:
       on-profile: test
+  cloud:
+    aws:
+      s3:
+        bucket: test-bucket
+
+storage:
+  prefix: test
 
 jwt:
   secret:
