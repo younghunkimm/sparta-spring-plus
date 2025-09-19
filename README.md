@@ -43,88 +43,59 @@ Boot 3 기반 서버
 - Log: 요청/비즈니스 로그 기록
 - Common: 공통 예외/인증 컨텍스트 등 기반 구성
 
-## 📘 API 명세서 (도메인별 요약)
+## 📘 API 명세 요약
 
 ### Auth
 
 ```http
-# 회원가입
-POST /auth/signup
-
-# 로그인
-POST /auth/signin
+POST /auth/signup                # 회원가입
+POST /auth/signin                # 로그인
 ```
 
 ### User
 
 ```http
-# 사용자 조회
-GET /users/{userId}
-
-# 프로필 이미지 파일키 변경
-PATCH /users/profile
-
-# 프로필 이미지 조회
-GET /users/profile
-
-# 비밀번호 변경
-PUT /users
+GET /users/{userId}              # 사용자 조회
+PATCH /users/profile             # 프로필 이미지 파일키 변경
+GET /users/profile               # 프로필 이미지 조회
+PUT /users                       # 비밀번호 변경
 ```
 
 ### Admin
 
 ```http
-# 사용자 권한 변경
-PATCH /admin/users/{userId}
+PATCH /admin/users/{userId}      # 사용자 권한 변경
 ```
 
 ### File
 
 ```http
-# 업로드용 Presigned URL 발급
-POST /files/presigned/upload
-
-# 다운로드용 Presigned URL 발급
-POST /files/presigned/download
+POST /files/presigned/upload     # 업로드용 Presigned URL 발급
+POST /files/presigned/download   # 다운로드용 Presigned URL 발급
 ```
 
 ### Todo
 
 ```http
-# Todo 생성
-POST /todos
-
-# Todo 목록 조회
-GET /todos?weather={weather}&startDate={yyyy-MM-dd}&endDate={yyyy-MM-dd}&page={1}&size={10}
-
-# Todo 단건 조회
-GET /todos/{todoId}
-
-# Todo 검색 (관계 카운트 포함)
-GET /todos/search?keyword={keyword}&startDate={yyyy-MM-dd}&endDate={yyyy-MM-dd}&managerName={name}&page={1}&size={10}
+POST /todos                      # Todo 생성
+GET /todos                       # Todo 목록 조회
+GET /todos/{todoId}              # Todo 단건 조회
+GET /todos/search                # Todo 검색 (관계 카운트 포함)
 ```
 
 ### Comment
 
 ```http
-# 댓글 등록
-POST /todos/{todoId}/comments
-
-# 댓글 목록 조회
-GET /todos/{todoId}/comments
+POST /todos/{todoId}/comments    # 댓글 등록
+GET /todos/{todoId}/comments     # 댓글 목록 조회
 ```
 
 ### Todo Manager
 
 ```http
-# 매니저 등록
-POST /todos/{todoId}/managers
-
-# 매니저 목록 조회
-GET /todos/{todoId}/managers
-
-# 매니저 삭제
-DELETE /todos/{todoId}/managers/{managerId}
+POST /todos/{todoId}/managers    # 매니저 등록
+GET /todos/{todoId}/managers     # 매니저 목록 조회
+DELETE /todos/{todoId}/managers/{managerId}   # 매니저 삭제
 ```
 
 ## 🗂️ 프로젝트 구조
