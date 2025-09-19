@@ -6,10 +6,18 @@ on:
     branches:
       - "feat/**"
       - dev
+    paths-ignore:
+      - "README.md"
+      - "**/*.md"
+      - "docs/**"
   pull_request:
     branches:
       - dev
       - main
+    paths-ignore:
+      - "README.md"
+      - "**/*.md"
+      - "docs/**"
 
 concurrency:
   group: ci-${{ github.ref }}

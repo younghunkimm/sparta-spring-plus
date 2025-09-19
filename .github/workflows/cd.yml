@@ -5,6 +5,10 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - "README.md"
+      - "**/*.md"
+      - "docs/**"
 
 permissions:
   id-token: write # OIDC
