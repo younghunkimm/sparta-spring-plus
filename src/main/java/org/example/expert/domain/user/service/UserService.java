@@ -45,7 +45,14 @@ public class UserService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new InvalidRequestException("User not found"));
 
+        String oldFileKey = user.getProfileImageUrl();
+
         user.updateProfileImageUrl(fileKey);
+        userRepository.flush();
+
+        if (StringUtils.hasText(oldFileKey)) {
+            fileService.deleteFile(oldFileKey);
+        }
     }
 
     public UserGetProfileImageResponse getProfileImage(
