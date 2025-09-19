@@ -7,6 +7,28 @@
 [![Cloud](https://img.shields.io/badge/AWS-S3-232F3E?logo=amazon-aws&logoColor=white)](https://aws.amazon.com/s3/)
 [![QueryDSL](https://img.shields.io/badge/QueryDSL-Jakarta-1f6feb)](https://querydsl.com/)
 
+## ☁️ AWS 서비스 설정
+
+- [EC2 Instance](docs/ec2.md)
+- [EC2 ALB](docs/alb.md)
+- [RDS](docs/rds.md)
+- [S3](docs/s3.md)
+- [OIDC](docs/oidc.md)
+- [Parameter Store](docs/parameter-store.md)
+
+## ♾️ CI/CD Pipeline
+
+[GitHub Actions Workflows](.github/workflows/)
+```text
+- Github Actions
+- Application Load Balancer
+- EC2 Instance
+- Docker
+- Docker Hub
+- SSM Run Command
+- AWS Parameter Store
+```
+
 ## 🧰 기술 스택
 
 - 언어/런타임: Java 17
