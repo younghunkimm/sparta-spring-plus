@@ -26,7 +26,8 @@
 - Docker
 - Docker Hub
 - SSM Run Command
-- AWS Parameter Store
+- SSM Document
+- SSM Parameter Store
 ```
 
 ## 🧰 기술 스택
