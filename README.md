@@ -1,10 +1,9 @@
-# Spring Plus (expert)
+# Spring Plus
 
 [![Java](https://img.shields.io/badge/Java-17-007396?logo=openjdk&logoColor=white)](https://adoptium.net/temurin/releases/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3-6DB33F?logo=spring-boot&logoColor=white)](https://spring.io/projects/spring-boot)
 [![Build](https://img.shields.io/badge/Build-Gradle-02303A?logo=gradle&logoColor=white)](https://gradle.org/)
 [![Database](https://img.shields.io/badge/Database-MySQL-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
-[![Cloud](https://img.shields.io/badge/AWS-S3-232F3E?logo=amazon-aws&logoColor=white)](https://aws.amazon.com/s3/)
 [![QueryDSL](https://img.shields.io/badge/QueryDSL-Jakarta-1f6feb)](https://querydsl.com/)
 
 ## ☁️ AWS 서비스 설정
