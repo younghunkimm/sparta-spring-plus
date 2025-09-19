@@ -3,19 +3,23 @@ package org.example.expert.domain.file.service;
 import java.time.Duration;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.file.dto.response.PresignedGetUrlResponse;
 import org.example.expert.domain.file.dto.response.PresignedPutUrlResponse;
 import org.example.expert.domain.file.enums.FileDomain;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.core.exception.SdkException;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FileService {
@@ -54,7 +58,7 @@ public class FileService {
     public PresignedGetUrlResponse createPresignedGetUrl(String fileKey) {
 
         String presignedUrl = generatePresignedGetUrl(fileKey);
-        
+
         return PresignedGetUrlResponse.builder()
             .presignedUrl(presignedUrl)
             .fileKey(fileKey)
@@ -95,11 +99,17 @@ public class FileService {
 
     public void deleteFile(String fileKey) {
 
-        s3Client.deleteObject(builder ->
-            builder
-                .bucket(bucket)
-                .key(fileKey)
-                .build()
-        );
+        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+            .bucket(bucket)
+            .key(fileKey)
+            .build();
+
+        try {
+            s3Client.deleteObject(deleteObjectRequest);
+            log.info("Successfully deleted file from S3: {}", fileKey);
+        } catch (SdkException e) {
+            log.error("Failed to delete file from S3. fileKey: {}", fileKey, e);
+            throw e;
+        }
     }
 }
