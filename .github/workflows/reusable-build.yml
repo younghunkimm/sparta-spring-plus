@@ -26,5 +26,10 @@ jobs:
       - name: Grant execute permission for Gradlew
         run: chmod +x ./gradlew
 
-      - name: Build ${{ inputs.run-tests && '(with tests)' || '(skip tests)' }}
-        run: ./gradlew clean build --no-daemon ${{ inputs.run-tests && '' || '-x test' }}
+      - name: Build (with tests)
+        if: ${{ inputs['run-tests'] == true }}
+        run: ./gradlew clean build --no-daemon
+
+      - name: Build (skip tests)
+        if: ${{ inputs['run-tests'] != true }}
+        run: ./gradlew clean build --no-daemon -x test
