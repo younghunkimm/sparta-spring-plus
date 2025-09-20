@@ -15,3 +15,9 @@
 
 ### Listener
 <img width="1620" height="599" alt="image" src="https://github.com/user-attachments/assets/b765c19e-3b47-455c-b51c-6a8a119f84b5" />
+
+### Health Check
+<img width="1640" height="541" alt="image" src="https://github.com/user-attachments/assets/f6eda831-ef3d-4341-a514-9199c157a30f" />
+
+#### EC2 Instance에 직접 SSH 접속하여 확인
+<img width="753" height="215" alt="image" src="https://github.com/user-attachments/assets/7bccc4fb-01ab-469c-8a05-682fbae07c85" />
