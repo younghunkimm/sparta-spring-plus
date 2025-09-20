@@ -4,6 +4,8 @@
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3-6DB33F?logo=spring-boot&logoColor=white)](https://spring.io/projects/spring-boot)
 [![Build](https://img.shields.io/badge/Build-Gradle-02303A?logo=gradle&logoColor=white)](https://gradle.org/)
 [![Database](https://img.shields.io/badge/Database-MySQL-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![H2](https://img.shields.io/badge/H2-Test%20DB-lightblue.svg)](https://www.h2database.com/)
+[![JWT](https://img.shields.io/badge/JWT-Auth-black.svg)](https://jwt.io/)
 [![QueryDSL](https://img.shields.io/badge/QueryDSL-Jakarta-1f6feb)](https://querydsl.com/)
 
 ## ☁️ AWS 서비스 설정
