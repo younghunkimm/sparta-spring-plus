@@ -69,6 +69,10 @@ dependencies {
     // Spring Cloud AWS
     implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.2.1") // BOM
     implementation "io.awspring.cloud:spring-cloud-aws-starter-s3"
+
+    // ShedLock
+    implementation 'net.javacrumbs.shedlock:shedlock-spring:6.10.0'
+    implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:6.10.0'
 }
 
 tasks.named('test') {

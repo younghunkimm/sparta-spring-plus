@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.example.expert.domain.common.exception.InvalidRequestException;
 import org.example.expert.domain.user.dto.request.UserRoleChangeRequest;
 import org.example.expert.domain.user.entity.User;
@@ -35,6 +36,11 @@ public class UserAdminService {
 
     @Async
     @Transactional
+    /*
+     * lockAtMostFor: 작업이 예상보다 오래 걸릴 경우를 대비해 최대 락 유지 시간 설정 (1시간)
+     * lockAtLeastFor: 작업이 너무 빨리 끝나서 락이 바로 풀려도 안전하게 최소 락 유지 시간 설정 (1분)
+     */
+    @SchedulerLock(name = "userBulkInsert", lockAtMostFor = "PT1H", lockAtLeastFor = "PT1M")
     public void bulkInsertUsersAsync(int count) {
         // 실행 시간 측정을 위한 StopWatch 생성
         // "User Bulk Insert"라는 이름으로 작업 식별
