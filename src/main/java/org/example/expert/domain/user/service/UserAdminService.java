@@ -46,7 +46,7 @@ public class UserAdminService {
 
         // 반복 시작
         for (int i = 0; i < count; i++) {
-            String uuid = UUID.randomUUID().toString().substring(0, 8);
+            String uuid = UUID.randomUUID().toString().replace("-", "").substring(0, 16);
             String email = String.format("user%s@example.com", uuid);
             String nickname = String.format("user-%s", uuid);
 
