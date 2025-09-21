@@ -19,7 +19,8 @@
 
 ## ♾️ CI/CD Pipeline
 
-[GitHub Actions Workflows](.github/workflows/)
+- [📘 블로그에서 CI/CD 구축 과정 보기](https://younghunkimm.github.io/posts/cicd-pipeline-1/)
+- [GitHub Actions Workflows](.github/workflows/)
 ```text
 - Github Actions
 - Application Load Balancer
