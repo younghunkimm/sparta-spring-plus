@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StopWatch;
 
 @Slf4j
 @Service
@@ -35,6 +36,13 @@ public class UserAdminService {
     @Async
     @Transactional
     public void bulkInsertUsersAsync(int count) {
+        // 실행 시간 측정을 위한 StopWatch 생성
+        // "User Bulk Insert"라는 이름으로 작업 식별
+        StopWatch stopWatch = new StopWatch("User Bulk Insert");
+
+        // 시간 측정 시작
+        stopWatch.start("Bulk Insert Task");
+
         // 시작 로그 출력
         log.info("{}명의 사용자 대량 생성을 시작합니다.", count);
 
@@ -82,5 +90,12 @@ public class UserAdminService {
         }
 
         log.info("총 {}명의 사용자 대량 생성을 완료했습니다.", count);
+
+        // 시간 측정 종료
+        stopWatch.stop();
+
+        // 총 소요 시간 로그 및 상세 정보 출력
+        log.info("총 소요 시간: {} ms", stopWatch.getTotalTimeMillis());
+        log.info(stopWatch.prettyPrint());
     }
 }
