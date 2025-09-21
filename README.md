@@ -21,15 +21,42 @@
 
 - [📘 블로그에서 CI/CD 구축 과정 보기](https://younghunkimm.github.io/posts/cicd-pipeline-1/)
 - [GitHub Actions Workflows](.github/workflows/)
-```text
-- Github Actions
-- Application Load Balancer
-- EC2 Instance
-- Docker
-- Docker Hub
-- SSM Run Command
-- SSM Document
-- SSM Parameter Store
+```mermaid
+flowchart TB
+    subgraph Dev [GitHub]
+        A[Source Code]
+        B[GitHub Actions CI CD Workflow]
+    end
+
+    subgraph Docker [Docker Hub]
+        C[Private Repository]
+    end
+
+    subgraph AWS [AWS Cloud]
+        subgraph IAM [IAM]
+            R[OIDC Role]
+        end
+        D[SSM Parameter Store]
+        E[SSM Document spring-plus-deploy]
+        F[EC2 Instances - Spring Boot in Docker]
+        G[ALB - Load Balancer]
+    end
+
+    H[Client or User]
+
+    A --> B
+    B -->|Assume Role OIDC| R
+    R --> B
+
+    B -->|Build and Push| C
+    B -->|Trigger Deploy| E
+    B -->|Get params| D
+
+    E -->|Run Command| F
+    C -->|Pull Image| F
+    D -->|Env vars and secrets| F
+
+    F --> G --> H
 ```
 
 ## 🧰 기술 스택
