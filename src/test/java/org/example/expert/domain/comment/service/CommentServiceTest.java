@@ -53,7 +53,7 @@ class CommentServiceTest {
             long todoId = 1L;
             CommentSaveRequest request = new CommentSaveRequest("댓글 내용");
             User user = User.fromAuthUser(authUser);
-            Todo todo = new Todo("제목", "내용", "Sunny", user);
+            Todo todo = new Todo(1L, "제목", "내용", "Sunny", user);
 
             given(todoRepository.findById(anyLong())).willReturn(Optional.of(todo));
             given(commentRepository.save(any(Comment.class))).willAnswer(
@@ -97,7 +97,7 @@ class CommentServiceTest {
             // given
             long todoId = 1L;
             User user = new User("test@example.com", "password", "nickname", UserRole.ROLE_USER);
-            Todo todo = new Todo("제목", "내용", "Sunny", user);
+            Todo todo = new Todo(1L, "제목", "내용", "Sunny", user);
             List<Comment> comments = List.of(
                 new Comment("댓글1", user, todo),
                 new Comment("댓글2", user, todo)

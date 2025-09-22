@@ -61,8 +61,7 @@ public class ManagerServiceTest {
             ManagerSaveRequest request = new ManagerSaveRequest(managerUserId);
 
             User owner = User.fromAuthUser(authUser);
-            Todo todo = new Todo("title", "contents", "sunny", owner);
-            ReflectionTestUtils.setField(todo, "id", todoId);
+            Todo todo = new Todo(todoId, "title", "contents", "sunny", owner);
 
             User managerUser = new User("manager@test.com", "password", "manager",
                 UserRole.ROLE_USER);
@@ -113,7 +112,7 @@ public class ManagerServiceTest {
 
             User owner = new User("owner@test.com", "password", "owner", UserRole.ROLE_USER);
             ReflectionTestUtils.setField(owner, "id", ownerId);
-            Todo todo = new Todo("title", "contents", "sunny", owner);
+            Todo todo = new Todo(todoId, "title", "contents", "sunny", owner);
 
             given(todoRepository.findById(todoId)).willReturn(Optional.of(todo));
 
@@ -136,7 +135,7 @@ public class ManagerServiceTest {
             ManagerSaveRequest request = new ManagerSaveRequest(managerUserId);
 
             User owner = User.fromAuthUser(authUser);
-            Todo todo = new Todo("title", "contents", "sunny", owner);
+            Todo todo = new Todo(todoId, "title", "contents", "sunny", owner);
 
             given(todoRepository.findById(todoId)).willReturn(Optional.of(todo));
             given(userRepository.findById(managerUserId)).willReturn(Optional.empty());
@@ -159,7 +158,7 @@ public class ManagerServiceTest {
             ManagerSaveRequest request = new ManagerSaveRequest(ownerId);
 
             User owner = User.fromAuthUser(authUser);
-            Todo todo = new Todo("title", "contents", "sunny", owner);
+            Todo todo = new Todo(todoId, "title", "contents", "sunny", owner);
 
             given(todoRepository.findById(todoId)).willReturn(Optional.of(todo));
             given(userRepository.findById(ownerId)).willReturn(Optional.of(owner));
@@ -182,7 +181,7 @@ public class ManagerServiceTest {
             long todoId = 1L;
 
             User owner = new User("owner@test.com", "password", "owner", UserRole.ROLE_USER);
-            Todo todo = new Todo("title", "contents", "sunny", owner);
+            Todo todo = new Todo(todoId, "title", "contents", "sunny", owner);
             // 운영 코드에서 todo.getId()로
             // managerRepository.findByTodoIdWithUser() 메서드를 호출 하기 때문에
             // ReflectionTestUtils로 id 주입 필요
@@ -236,7 +235,7 @@ public class ManagerServiceTest {
                 UserRole.ROLE_USER);
 
             User owner = User.fromAuthUser(authUser);
-            Todo todo = new Todo("title", "contents", "sunny", owner);
+            Todo todo = new Todo(todoId, "title", "contents", "sunny", owner);
 
             User managerUser = new User("manager@test.com", "password", "manager",
                 UserRole.ROLE_USER);
@@ -280,7 +279,7 @@ public class ManagerServiceTest {
                 UserRole.ROLE_USER);
 
             User owner = new User("owner@test.com", "password", "owner", UserRole.ROLE_USER);
-            Todo todo = new Todo("title", "contents", "sunny", owner);
+            Todo todo = new Todo(todoId, "title", "contents", "sunny", owner);
 
             given(todoRepository.findById(todoId)).willReturn(Optional.of(todo));
 
@@ -302,7 +301,7 @@ public class ManagerServiceTest {
                 UserRole.ROLE_USER);
 
             User owner = User.fromAuthUser(authUser);
-            Todo todo = new Todo("title", "contents", "sunny", owner);
+            Todo todo = new Todo(todoId, "title", "contents", "sunny", owner);
 
             given(todoRepository.findById(todoId)).willReturn(Optional.of(todo));
             given(managerRepository.findById(managerId)).willReturn(Optional.empty());
@@ -326,11 +325,10 @@ public class ManagerServiceTest {
                 UserRole.ROLE_USER);
 
             User owner = User.fromAuthUser(authUser);
-            Todo todo = new Todo("title", "contents", "sunny", owner);
-            ReflectionTestUtils.setField(todo, "id", todoId);
+            Todo todo = new Todo(todoId, "title", "contents", "sunny", owner);
 
-            Todo anotherTodo = new Todo("another title", "another contents", "cloudy", owner);
-            ReflectionTestUtils.setField(anotherTodo, "id", anotherTodoId);
+            Todo anotherTodo = new Todo(anotherTodoId, "another title", "another contents",
+                "cloudy", owner);
 
             User managerUser = new User("manager@test.com", "password", "manager",
                 UserRole.ROLE_USER);
