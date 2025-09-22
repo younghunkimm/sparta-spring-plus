@@ -59,6 +59,10 @@ flowchart TB
     F --> G --> H
 ```
 
+## 조회 속도 개선
+
+- [PR Link](https://github.com/younghunkimm/sparta-spring-plus/pull/64)
+
 ## 🧰 기술 스택
 
 - 언어/런타임: Java 17
