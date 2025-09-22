@@ -10,20 +10,20 @@ on:
       - "**/*.md"
       - "docs/**"
 
-permissions:
-  id-token: write # OIDC
-  contents: read
+#permissions:
+#  id-token: write # OIDC
+#  contents: read
 
 concurrency:
   group: cd-main
   cancel-in-progress: true
 
-env:
-  AWS_REGION: ap-northeast-2
-  IMAGE_NAME: younghunkimm/spring-plus
-  SSM_DOCUMENT: spring-plus-deploy
-  SSM_TARGET: 'Key=tag:SSMTarget,Values=spring-plus'
-  PARAM_PATH: /github/spring-plus/
+#env:
+#  AWS_REGION: ap-northeast-2
+#  IMAGE_NAME: younghunkimm/spring-plus
+#  SSM_DOCUMENT: spring-plus-deploy
+#  SSM_TARGET: 'Key=tag:SSMTarget,Values=spring-plus'
+#  PARAM_PATH: /github/spring-plus/
 
 jobs:
   build:
@@ -31,96 +31,96 @@ jobs:
     with:
       run-tests: false
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Configure AWS credentials (OIDC)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      # Parameter Store 에서 DockerHub 자격 증명 가져오기
-      - name: Fetch DockerHub creds from SSM Parameter Store
-        id: ssm
-        shell: bash
-        run: |
-          set -euo pipefail
-          TOKEN="$(aws ssm get-parameter --name ${PARAM_PATH}DOCKERHUB_TOKEN --with-decryption --query Parameter.Value --output text)"
-          USER="$(aws ssm get-parameter --name ${PARAM_PATH}DOCKERHUB_USERNAME --with-decryption --query Parameter.Value --output text)"
-          echo "::add-mask::$TOKEN"
-          echo "$TOKEN" | docker login -u "$USER" --password-stdin
-          echo "DOCKERHUB_USERNAME=$USER" >> $GITHUB_ENV
-
-      - name: Build Docker image
-        run: |
-          GIT_SHA=$(git rev-parse --short HEAD)
-          echo "GIT_SHA=$GIT_SHA" >> $GITHUB_ENV
-          docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$GIT_SHA .
-
-      - name: Push Docker image
-        run: |
-          docker push $IMAGE_NAME:latest
-          docker push $IMAGE_NAME:$GIT_SHA
-
-      - name: Docker logout
-        if: always()
-        run: docker logout || true
-
-      - name: Trigger SSM deployment (by git SHA)
-        run: |
-          aws ssm send-command \
-            --document-name "$SSM_DOCUMENT" \
-            --comment "Deploy $IMAGE_NAME:$GIT_SHA from Github Actions" \
-            --parameters "ImageTag=$GIT_SHA" \
-            --targets "$SSM_TARGET" \
-            --max-concurrency "50%" \
-            --max-errors "1" \
-            --region "$AWS_REGION" \
-            --output json > cmd.json
-
-          COMMAND_ID=$(jq -r '.Command.CommandId' cmd.json)
-
-          # 최대 10분 대기 (120 * 5s)
-          for i in {1..120}; do
-            total=$(aws ssm list-command-invocations \
-              --command-id "$COMMAND_ID" \
-              --details \
-              --query 'length(CommandInvocations[])' \
-              --output text || echo 0)
-
-            succ=$(aws ssm list-command-invocations \
-              --command-id "$COMMAND_ID" \
-              --details \
-              --query 'length(CommandInvocations[?Status==`Success`])' \
-              --output text || echo 0)
-
-            fail=$(aws ssm list-command-invocations \
-              --command-id "$COMMAND_ID" \
-              --details \
-              --query 'length(CommandInvocations[?Status==`Failed` || Status==`Cancelled` || Status==`TimedOut`])' \
-              --output text || echo 0)
-
-            echo "[$i] total=$total succ=$succ fail=$fail"
-
-            if [ "$fail" -gt 0 ]; then
-              echo "At least one invocation failed. Dumping details..."
-              aws ssm list-command-invocations --command-id "$COMMAND_ID" --details
-              exit 1
-            fi
-
-            if [ "$total" -gt 0 ] && [ "$succ" -eq "$total" ]; then
-              echo "All invocations succeeded."
-              exit 0
-            fi
-
-            sleep 5
-          done
-
-          echo "Timeout waiting for all instances to succeed."
-          aws ssm list-command-invocations --command-id "$COMMAND_ID" --details
-          exit 1
+#  deploy:
+#    runs-on: ubuntu-latest
+#    needs: build
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#
+#      - name: Configure AWS credentials (OIDC)
+#        uses: aws-actions/configure-aws-credentials@v4
+#        with:
+#          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+#          aws-region: ${{ env.AWS_REGION }}
+#
+#      # Parameter Store 에서 DockerHub 자격 증명 가져오기
+#      - name: Fetch DockerHub creds from SSM Parameter Store
+#        id: ssm
+#        shell: bash
+#        run: |
+#          set -euo pipefail
+#          TOKEN="$(aws ssm get-parameter --name ${PARAM_PATH}DOCKERHUB_TOKEN --with-decryption --query Parameter.Value --output text)"
+#          USER="$(aws ssm get-parameter --name ${PARAM_PATH}DOCKERHUB_USERNAME --with-decryption --query Parameter.Value --output text)"
+#          echo "::add-mask::$TOKEN"
+#          echo "$TOKEN" | docker login -u "$USER" --password-stdin
+#          echo "DOCKERHUB_USERNAME=$USER" >> $GITHUB_ENV
+#
+#      - name: Build Docker image
+#        run: |
+#          GIT_SHA=$(git rev-parse --short HEAD)
+#          echo "GIT_SHA=$GIT_SHA" >> $GITHUB_ENV
+#          docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$GIT_SHA .
+#
+#      - name: Push Docker image
+#        run: |
+#          docker push $IMAGE_NAME:latest
+#          docker push $IMAGE_NAME:$GIT_SHA
+#
+#      - name: Docker logout
+#        if: always()
+#        run: docker logout || true
+#
+#      - name: Trigger SSM deployment (by git SHA)
+#        run: |
+#          aws ssm send-command \
+#            --document-name "$SSM_DOCUMENT" \
+#            --comment "Deploy $IMAGE_NAME:$GIT_SHA from Github Actions" \
+#            --parameters "ImageTag=$GIT_SHA" \
+#            --targets "$SSM_TARGET" \
+#            --max-concurrency "50%" \
+#            --max-errors "1" \
+#            --region "$AWS_REGION" \
+#            --output json > cmd.json
+#
+#          COMMAND_ID=$(jq -r '.Command.CommandId' cmd.json)
+#
+#          # 최대 10분 대기 (120 * 5s)
+#          for i in {1..120}; do
+#            total=$(aws ssm list-command-invocations \
+#              --command-id "$COMMAND_ID" \
+#              --details \
+#              --query 'length(CommandInvocations[])' \
+#              --output text || echo 0)
+#
+#            succ=$(aws ssm list-command-invocations \
+#              --command-id "$COMMAND_ID" \
+#              --details \
+#              --query 'length(CommandInvocations[?Status==`Success`])' \
+#              --output text || echo 0)
+#
+#            fail=$(aws ssm list-command-invocations \
+#              --command-id "$COMMAND_ID" \
+#              --details \
+#              --query 'length(CommandInvocations[?Status==`Failed` || Status==`Cancelled` || Status==`TimedOut`])' \
+#              --output text || echo 0)
+#
+#            echo "[$i] total=$total succ=$succ fail=$fail"
+#
+#            if [ "$fail" -gt 0 ]; then
+#              echo "At least one invocation failed. Dumping details..."
+#              aws ssm list-command-invocations --command-id "$COMMAND_ID" --details
+#              exit 1
+#            fi
+#
+#            if [ "$total" -gt 0 ] && [ "$succ" -eq "$total" ]; then
+#              echo "All invocations succeeded."
+#              exit 0
+#            fi
+#
+#            sleep 5
+#          done
+#
+#          echo "Timeout waiting for all instances to succeed."
+#          aws ssm list-command-invocations --command-id "$COMMAND_ID" --details
+#          exit 1
